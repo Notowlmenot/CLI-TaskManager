@@ -12,6 +12,10 @@ type Task struct {
 	UpdatedAt   time.Time
 }
 
+var InProgressList []*Task
+var CompletedList []*Task
+var ToDoList []*Task
+
 func New(id int, description string, status string) *Task {
 	return &Task{
 		ID:          id,
@@ -22,8 +26,15 @@ func New(id int, description string, status string) *Task {
 	}
 }
 
-func (t *Task) Delete() {
-	t = nil
+func firstFreeID() int {
+	//Переделать основной список в map[int:Task] и итерировать до первого ненахода числа в мапе?
+	return 1
+}
+
+func Add(description string, status string) *Task {
+	newTask := New(firstFreeID(), description, status)
+	ToDoList = append(ToDoList, newTask)
+	return newTask
 }
 
 func (t *Task) Update(description string) {

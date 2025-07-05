@@ -56,7 +56,7 @@ func main() {
 		case "add":
 			if len(input) >= 2 {
 				description := strings.Join(input[1:], " ")
-				newTask := tasks.Add(description, "ToDo")
+				newTask := tasks.Add(description, tasks.TODO)
 				fmt.Println("Успешно добавлена задача №", newTask.ID)
 			} else {
 				fmt.Println(input[1:])
@@ -86,13 +86,20 @@ func main() {
 			if len(input) >= 2 {
 				switch input[1] {
 				case "done":
-					//
-				case "todo":
-					for key, value := range tasks.ToDoList {
+					for key, value := range tasks.InProgressList {
+						fmt.Println("Список выполненых задач: \n")
 						fmt.Printf("Задача №%d: %s \n", key, value.Description)
 					}
+				case "all":
+					for key, value := range tasks.ToDoList {
+						fmt.Printf("Список всех задач: \n")
+						fmt.Printf("Задача №%d: %s. Статус: %s \n", key, value.Description, value.Status)
+					}
 				case "in-progress":
-					//
+					for key, value := range tasks.InProgressList {
+						fmt.Println("Список задач в процессе выполнения: \n")
+						fmt.Printf("Задача №%d: %s \n", key, value.Description)
+					}
 				default:
 					println("Неверно введен тип списка. Возможные варианты: \n list todo \n list done \n list in-progress \n")
 				}
@@ -100,9 +107,21 @@ func main() {
 				fmt.Println("Неверно введен тип списка. Возможные варианты: \n list todo \n list done \n list in-progress \n")
 			}
 		case "mark-in-progress":
-			//
+			if len(input) >= 2 {
+				TaskNum, err := (strconv.Atoi(input[1])) // -1
+				if err != nil {
+					println("Неверно введен номер задачи.")
+				}
+				tasks.UpdateStatus(TaskNum, tasks.INPROGRESS)
+			}
 		case "mark-done":
-			//
+			if len(input) >= 2 {
+				TaskNum, err := (strconv.Atoi(input[1])) // -1
+				if err != nil {
+					println("Неверно введен номер задачи.")
+				}
+				tasks.UpdateStatus(TaskNum, tasks.COMPLETED)
+			}
 		case "help":
 			fmt.Println("Список команд:")
 		default:

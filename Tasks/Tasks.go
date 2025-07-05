@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+const (
+	INPROGRESS = "В процессе"
+	COMPLETED  = "Выполнено"
+	TODO       = "Предстоит сделать"
+)
+
 type Task struct {
 	ID          int
 	Description string
@@ -58,6 +64,14 @@ func Update(num int, description string) {
 	}
 }
 
-func (t *Task) UpdateStatus(status string) {
-	t.Status = status
+func UpdateStatus(num int, status string) {
+	t, ok := ToDoList[num]
+	if ok {
+
+		// TODO: Удалеине задач из списка прочх статусов
+		t.Status = status
+		fmt.Printf("Задач №%d помечна как \n", num)
+	} else {
+		fmt.Println("Неверно введен номер задачи")
+	}
 }

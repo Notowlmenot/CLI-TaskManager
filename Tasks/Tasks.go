@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -14,7 +15,7 @@ type Task struct {
 
 var InProgressList []*Task
 var CompletedList []*Task
-var ToDoList []*Task
+var ToDoList = make(map[int]*Task)
 
 func New(id int, description string, status string) *Task {
 	return &Task{
@@ -33,12 +34,28 @@ func firstFreeID() int {
 
 func Add(description string, status string) *Task {
 	newTask := New(firstFreeID(), description, status)
-	ToDoList = append(ToDoList, newTask)
+	ToDoList[firstFreeID()] = newTask
 	return newTask
 }
 
-func (t *Task) Update(description string) {
-	t.Description = description
+func Delete(num int) {
+	_, ok := ToDoList[num]
+	if ok {
+		delete(ToDoList, num)
+		fmt.Printf("Задач №%d успешно удалена \n", num)
+	} else {
+		fmt.Println("Неверно введен номер задачи")
+	}
+}
+
+func Update(num int, description string) {
+	_, ok := ToDoList[num]
+	if ok {
+		ToDoList[num].Description = description
+		fmt.Printf("Задач №%d успешно обновлена \n", num)
+	} else {
+		fmt.Println("Неверно введен номер задачи")
+	}
 }
 
 func (t *Task) UpdateStatus(status string) {

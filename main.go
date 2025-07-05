@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -45,7 +46,11 @@ func main() {
 			fmt.Println("Ошибка при команды: ", err)
 		}
 		input := strings.Fields(UserInput)
-		command := input[0]
+
+		command := ""
+		if len(input) > 0 {
+			command = input[0]
+		}
 
 		switch command {
 		case "add":
@@ -60,27 +65,39 @@ func main() {
 			}
 
 		case "delete":
-			// TaskNum, err := (strconv.Atoi(input[1])) // -1
-			// 	if err != nil {
-			// 		println("Неверно введен номер задачи.")
-			// 	}
+			TaskNum, err := (strconv.Atoi(input[1])) // -1
+			if err != nil {
+				println("Неверно введен номер задачи.")
+				continue
+			}
+			tasks.Delete(TaskNum)
 		case "update":
-			// TaskNum, err := (strconv.Atoi(input[1])) // -1
-			// 	if err != nil {
-			// 		println("Неверно введен номер задачи.")
-			// 	}
+			if len(input) >= 3 {
+				TaskNum, err := (strconv.Atoi(input[1])) // -1
+				newDescription := strings.Join(input[1:], " ")
+				if err != nil {
+					println("Неверно введен номер задачи.")
+				}
+				tasks.Update(TaskNum, newDescription)
+			} else {
+				fmt.Println("Неверный ввод команды. Необходимые аргументы: update NUM NEW_DESCRIPTION")
+			}
 		case "list":
-			if len(input) > 2 {
+			if len(input) >= 2 {
 				switch input[1] {
 				case "done":
 					//
 				case "todo":
-					//
+					for key, value := range tasks.ToDoList {
+						fmt.Printf("Задача №%d: %s \n", key, value.Description)
+					}
 				case "in-progress":
 					//
 				default:
-					println("Неверно введен тип списка. Возможные варианты: \n todo \n done \n in-progress")
+					println("Неверно введен тип списка. Возможные варианты: \n list todo \n list done \n list in-progress \n")
 				}
+			} else {
+				fmt.Println("Неверно введен тип списка. Возможные варианты: \n list todo \n list done \n list in-progress \n")
 			}
 		case "mark-in-progress":
 			//
